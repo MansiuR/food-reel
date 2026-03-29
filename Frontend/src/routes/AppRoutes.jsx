@@ -11,14 +11,29 @@ import BottomNav from '../components/BottomNav';
 import CreateFood from '../pages/food-partner/CreateFood';
 import Profile from '../pages/food-partner/Profile';
 
-
-const AppRoutes = () => {
-    // Debug: Check for user on app load
-    React.useEffect(() => {
-        const user = localStorage.getItem('user');
-        console.log("AppRoutes loaded - User in localStorage:", user);
+// Route guard - redirects to login if no user
+const ProtectedRoute = ({ element }) => {
+    const user = React.useMemo(() => {
+        const savedUser = localStorage.getItem('user');
+        console.log("🔐 ProtectedRoute check - user:", savedUser);
+        try {
+            return savedUser ? JSON.parse(savedUser) : null;
+        } catch {
+            console.log("🔐 Corrupted user - clearing");
+            localStorage.clear();
+            return null;
+        }
     }, []);
 
+    if (!user) {
+        console.log("🔐 NO USER - showing login");
+        return <UserLogin />;
+    }
+    console.log("🔐 USER EXISTS - showing protected content");
+    return element;
+};
+
+const AppRoutes = () => {
     return (
         <Router>
             <Routes>
@@ -27,10 +42,10 @@ const AppRoutes = () => {
                 <Route path="/user/login" element={<UserLogin />} />
                 <Route path="/food-partner/register" element={<FoodPartnerRegister />} />
                 <Route path="/food-partner/login" element={<FoodPartnerLogin />} />
-                <Route path="/" element={<><Home /> <BottomNav /></>} />
-                <Route path="/saved" element={<><Saved /><BottomNav /></>} />
-                <Route path="/create-food" element={<CreateFood />} />
-                <Route path="/food-partner/:id" element={<Profile />} />
+                <Route path="/" element={<ProtectedRoute element={<><Home /> <BottomNav /></>} />} />
+                <Route path="/saved" element={<ProtectedRoute element={<><Saved /><BottomNav /></>} />} />
+                <Route path="/create-food" element={<ProtectedRoute element={<CreateFood />} />} />
+                <Route path="/food-partner/:id" element={<ProtectedRoute element={<Profile />} />} />
             </Routes>
         </Router>
     )
