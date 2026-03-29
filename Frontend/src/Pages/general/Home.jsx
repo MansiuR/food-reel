@@ -3,6 +3,7 @@ import axios from 'axios';
 import '../../styles/reels.css'
 import ReelFeed from '../../components/ReelFeed'
 import UserProfile  from '../general/UserProfile'
+import UserLogin from '../auth/UserLogin';
 
 const Home = () => {
     const [ videos, setVideos ] = useState([])
@@ -62,8 +63,7 @@ const Home = () => {
             <UserProfile user={currentUser} />
 
             <ReelFeed
-                items={videos}
-
+                items={UserLogin}
                 onLike={likeVideo}
                 onSave={saveVideo}
                 emptyMessage="No videos available."
