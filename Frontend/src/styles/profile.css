@@ -1,0 +1,137 @@
+@import './theme.css';
+
+/* Layout container */
+.profile-page {
+  max-width: 800px;
+margin: 0 auto;
+  min-height: 100dvh;
+  background-color: #0f0f0f;
+  color: #ffffff;
+  padding: var(--space-6) var(--space-4) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* Header block */
+.profile-header {
+background: #1c1c1e;
+  border: 1px solid #2a2a2c;
+  border-radius: 24px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.profile-meta {
+display: grid;
+  grid-template-columns: 100px 1fr; /* Slightly smaller avatar */
+  align-items: center;
+  gap: 24px;
+}
+
+.profile-avatar {
+width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #2c2c2e;
+  border: 3px solid #F2AC29; 
+  padding: 2px;
+}
+
+.profile-info { display: grid; gap: 10px; }
+
+/* Pills */
+.profile-pill {
+display: inline-flex;
+  align-items: center;
+  border-radius: 12px;
+  padding: 8px 14px;
+  background: #2c2c2e;
+  border: none; /* Removed border for cleaner look */
+  color: #ffffff;
+  width: fit-content;
+}
+
+.profile-business { font-size: 1.15rem; font-weight: 700; }
+.profile-address { font-size: 0.95rem; color: #8e8e93; }
+
+/* Stats */
+.profile-stats {
+display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  background: #222224; /* Wrap stats in their own subtle box */
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.profile-stat {
+display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+.profile-stat-label {
+ font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8e8e93;
+  font-weight: 600;
+}
+
+.profile-stat-value {
+font-size: 1.8rem;
+  font-weight: 800;
+  color: #F2AC29; /* Make the numbers golden */
+}
+
+/* Separator line under header (as in wireframe) */
+.profile-sep {
+height: 1px;
+  border: none;
+  background: #2a2a2c;
+}
+
+/* Grid of videos */
+.profile-grid {
+display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px; /* Tiny gap for modern IG/TikTok look */
+  border-radius: 16px;
+  overflow: hidden; /* Clips the corners of the grid */
+}
+
+.profile-grid-item { 
+border: none;
+  aspect-ratio: 9 / 16; /* Taller ratio, better for phone videos */
+  background: #1c1c1e;
+ }
+
+.profile-grid-video {
+display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive tweaks */
+@media (max-width: 900px) {
+  .profile-meta { grid-template-columns: 96px 1fr; }
+  .profile-avatar { width: 96px; height: 96px; }
+}
+
+@media (max-width: 680px) {
+
+}
+
+@media (max-width: 420px) {
+.profile-header { padding: 20px; }
+  .profile-meta { grid-template-columns: 80px 1fr; gap: 16px; }
+  .profile-avatar { width: 80px; height: 80px; }
+  .profile-stats { padding: 15px; }
+  .profile-stat-value { font-size: 1.5rem; }
+}
