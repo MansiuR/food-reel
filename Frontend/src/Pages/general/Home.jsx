@@ -11,22 +11,24 @@ const Home = () => {
     const [ currentUser, setCurrentUser ] = useState(null) //to hold the currently logged-in user
 
     useEffect(() => {
-        axios.get("https://food-reel-mng5.onrender.com/api/auth/user/login", { withCredentials: true })
-            .then(response => {
-                
-                console.log(response.data);
-                const mappedVideos = response.data.foodItems.map(video => ({
-                    ...video,
-                    isLiked: video.isLiked || false, 
-                    isSaved: video.isSaved || false
-                }));
-
-                setVideos(mappedVideos)
-            })
-            .catch(() => { /* noop: optionally handle error */ })
-            const savedUser = localStorage.getItem('user');
+        const savedUser = localStorage.getItem('user');
         if (savedUser) {
             setCurrentUser(JSON.parse(savedUser));
+            
+            // Only fetch videos if user is logged in
+            axios.get("https://food-reel-mng5.onrender.com/api/food", { withCredentials: true })
+                .then(response => {
+                    console.log(response.data);
+                    const mappedVideos = response.data.foodItems.map(video => ({
+                        ...video,
+                        isLiked: video.isLiked || false, 
+                        isSaved: video.isSaved || false
+                    }));
+                    setVideos(mappedVideos)
+                })
+                .catch((error) => {
+                    console.error("Error fetching videos:", error);
+                })
         }
     }, [])
 
@@ -56,6 +58,11 @@ const Home = () => {
         }
     }
 
+    // If user not logged in, show login page
+    if (!currentUser) {
+        return <UserLogin />
+    }
+
     return (
         <div className="relative w-full h-screen bg-black overflow-y-auto snap-y snap-mandatory">
             
@@ -63,7 +70,7 @@ const Home = () => {
             <UserProfile user={currentUser} />
 
             <ReelFeed
-                items={UserLogin}
+                items={videos}
                 onLike={likeVideo}
                 onSave={saveVideo}
                 emptyMessage="No videos available."
