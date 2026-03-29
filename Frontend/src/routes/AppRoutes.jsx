@@ -1,5 +1,5 @@
-import React from 'react'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import UserRegister from '../pages/auth/UserRegister';
 import ChooseRegister from '../pages/auth/ChooseRegister';
 import UserLogin from '../Pages/auth/UserLogin';
@@ -13,16 +13,34 @@ import Profile from '../pages/food-partner/Profile';
 
 // Route guard - redirects to login if no user
 const ProtectedRoute = ({ element }) => {
-    const user = React.useMemo(() => {
+    const [user, setUser] = useState(() => {
         const savedUser = localStorage.getItem('user');
-        console.log("🔐 ProtectedRoute check - user:", savedUser);
         try {
             return savedUser ? JSON.parse(savedUser) : null;
         } catch {
-            console.log("🔐 Corrupted user - clearing");
             localStorage.clear();
             return null;
         }
+    });
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Listen for storage changes
+        const handleStorageChange = () => {
+            const savedUser = localStorage.getItem('user');
+            console.log("🔐 Storage changed - user:", savedUser);
+            try {
+                const parsedUser = savedUser ? JSON.parse(savedUser) : null;
+                setUser(parsedUser);
+            } catch {
+                console.log("🔐 Corrupted user - clearing");
+                localStorage.clear();
+                setUser(null);
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
     }, []);
 
     if (!user) {

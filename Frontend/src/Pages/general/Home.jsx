@@ -3,59 +3,30 @@ import axios from 'axios';
 import '../../styles/reels.css'
 import ReelFeed from '../../components/ReelFeed'
 import UserProfile  from '../general/UserProfile'
-import UserLogin from '../auth/UserLogin';
 
 const Home = () => {
     const [ videos, setVideos ] = useState([])
-    const [ currentUser, setCurrentUser ] = useState(null)
-    const [ isLoading, setIsLoading ] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        console.log("HOME COMPONENT MOUNTED - CHECKING LOGIN");
-        console.log("All localStorage keys:", Object.keys(localStorage));
+        console.log("🏠 Home component mounted - fetching videos");
         
-        const savedUser = localStorage.getItem('user');
-        console.log("=== CRITICAL DEBUG ===");
-        console.log("Saved user from localStorage:", savedUser);
-        console.log("Type of savedUser:", typeof savedUser);
-        console.log("Is savedUser null?", savedUser === null);
-        console.log("Is savedUser undefined?", savedUser === undefined);
-        console.log("Boolean value of savedUser:", Boolean(savedUser));
-        
-        if (savedUser && savedUser !== 'undefined' && savedUser !== 'null' && savedUser.length > 0) {
-            console.log("USER FOUND - Attempting to parse...");
-            try {
-                const parsedUser = JSON.parse(savedUser);
-                console.log("✅ Parsed user successfully:", parsedUser);
-                setCurrentUser(parsedUser);
-                
-                // Fetch videos only if logged in
-                axios.get("https://food-reel-mng5.onrender.com/api/food", { withCredentials: true })
-                    .then(response => {
-                        console.log("✅ Videos fetched:", response.data);
-                        const mappedVideos = response.data.foodItems.map(video => ({
-                            ...video,
-                            isLiked: video.isLiked || false, 
-                            isSaved: video.isSaved || false
-                        }));
-                        setVideos(mappedVideos);
-                        setIsLoading(false);
-                    })
-                    .catch((error) => {
-                        console.error("❌ Error fetching videos:", error);
-                        setIsLoading(false);
-                    })
-            } catch (error) {
-                console.error("❌ Error parsing user - CLEARING localStorage:", error);
-                localStorage.clear();
-                console.log("Cleared all localStorage - showing login page");
+        // User is guaranteed to exist here because ProtectedRoute guards this
+        axios.get("https://food-reel-mng5.onrender.com/api/food", { withCredentials: true })
+            .then(response => {
+                console.log("✅ Videos fetched:", response.data);
+                const mappedVideos = response.data.foodItems.map(video => ({
+                    ...video,
+                    isLiked: video.isLiked || false, 
+                    isSaved: video.isSaved || false
+                }));
+                setVideos(mappedVideos);
                 setIsLoading(false);
-            }
-        } else {
-            console.log("❌ NO USER FOUND IN STORAGE - SHOWING LOGIN PAGE");
-            console.log("Reason: savedUser =", savedUser);
-            setIsLoading(false);
-        }
+            })
+            .catch((error) => {
+                console.error("❌ Error fetching videos:", error);
+                setIsLoading(false);
+            })
     }, [])
 
     async function likeVideo(item) {
@@ -89,11 +60,8 @@ const Home = () => {
         )
     }
 
-    // If user not logged in, show login page
-    if (!currentUser) {
-        console.log("Rendering UserLogin - currentUser is null");
-        return <UserLogin />
-    }
+    // User is guaranteed to exist because ProtectedRoute guards this page
+    const currentUser = JSON.parse(localStorage.getItem('user'));
 
     return (
         <div className="relative w-full h-screen bg-black overflow-y-auto snap-y snap-mandatory">
