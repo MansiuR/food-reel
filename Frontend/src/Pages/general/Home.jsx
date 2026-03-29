@@ -10,7 +10,7 @@ const Home = () => {
     const [ currentUser, setCurrentUser ] = useState(null) //to hold the currently logged-in user
 
     useEffect(() => {
-        axios.get("https://food-reel-mng5.onrender.com/api/food", { withCredentials: true })
+        axios.get("https://food-reel-mng5.onrender.com/api/auth/user/login", { withCredentials: true })
             .then(response => {
                 
                 console.log(response.data);
