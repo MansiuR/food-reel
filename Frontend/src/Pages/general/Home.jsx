@@ -11,19 +11,28 @@ const Home = () => {
     const [ isLoading, setIsLoading ] = useState(true)
 
     useEffect(() => {
-        const savedUser = localStorage.getItem('user');
-        console.log("Saved user from localStorage:", savedUser);
+        console.log("HOME COMPONENT MOUNTED - CHECKING LOGIN");
+        console.log("All localStorage keys:", Object.keys(localStorage));
         
-        if (savedUser) {
+        const savedUser = localStorage.getItem('user');
+        console.log("=== CRITICAL DEBUG ===");
+        console.log("Saved user from localStorage:", savedUser);
+        console.log("Type of savedUser:", typeof savedUser);
+        console.log("Is savedUser null?", savedUser === null);
+        console.log("Is savedUser undefined?", savedUser === undefined);
+        console.log("Boolean value of savedUser:", Boolean(savedUser));
+        
+        if (savedUser && savedUser !== 'undefined' && savedUser !== 'null' && savedUser.length > 0) {
+            console.log("USER FOUND - Attempting to parse...");
             try {
                 const parsedUser = JSON.parse(savedUser);
-                console.log("Parsed user:", parsedUser);
+                console.log("✅ Parsed user successfully:", parsedUser);
                 setCurrentUser(parsedUser);
                 
-                // Fetch videos if user is logged in
+                // Fetch videos only if logged in
                 axios.get("https://food-reel-mng5.onrender.com/api/food", { withCredentials: true })
                     .then(response => {
-                        console.log("Videos fetched:", response.data);
+                        console.log("✅ Videos fetched:", response.data);
                         const mappedVideos = response.data.foodItems.map(video => ({
                             ...video,
                             isLiked: video.isLiked || false, 
@@ -33,16 +42,18 @@ const Home = () => {
                         setIsLoading(false);
                     })
                     .catch((error) => {
-                        console.error("Error fetching videos:", error);
+                        console.error("❌ Error fetching videos:", error);
                         setIsLoading(false);
                     })
             } catch (error) {
-                console.error("Error parsing user:", error);
-                localStorage.removeItem('user');
+                console.error("❌ Error parsing user - CLEARING localStorage:", error);
+                localStorage.clear();
+                console.log("Cleared all localStorage - showing login page");
                 setIsLoading(false);
             }
         } else {
-            console.log("No user found - showing login");
+            console.log("❌ NO USER FOUND IN STORAGE - SHOWING LOGIN PAGE");
+            console.log("Reason: savedUser =", savedUser);
             setIsLoading(false);
         }
     }, [])
