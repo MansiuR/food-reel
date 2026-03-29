@@ -19,8 +19,8 @@ const UserProfile = ({ user }) => {
     const handleLogout = async () => {
         try {
             const logoutUrl = isFoodPartner 
-                ? 'http://localhost:3000/api/auth/food-partner/logout' 
-                : 'http://localhost:3000/api/auth/user/logout';
+                ? 'https://food-reel-mng5.onrender.com/api/auth/food-partner/logout' 
+                : 'https://food-reel-mng5.onrender.com/api/auth/user/logout';
 
             await axios.post(logoutUrl, {}, { withCredentials: true });
             localStorage.removeItem('user'); // Clear user data from localStorage

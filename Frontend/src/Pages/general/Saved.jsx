@@ -7,7 +7,7 @@ const Saved = () => {
     const [selectedVideo, setSelectedVideo] = useState(null) // 🔥 for popup
 
     useEffect(() => {
-        axios.get("http://localhost:3000/api/food/get-saved-videos", { withCredentials: true })
+        axios.get("https://food-reel-mng5.onrender.com/api/food/get-saved-videos", { withCredentials: true })
             .then(response => {
                 const savedFoods = response.data.savedFoods.map((item) => ({
                     _id: item.food._id,

@@ -73,7 +73,7 @@ const CreateFood = () => {
     
 
         try{
-        const response = await axios.post("http://localhost:3000/api/food", formData, {
+        const response = await axios.post("https://food-reel-mng5.onrender.com/api/food", formData, {
             withCredentials: true,
         })
         console.log(response.data);
